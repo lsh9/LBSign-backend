@@ -1,0 +1,6 @@
+__pycache__
+.idea/*
+backup/*
+instance/*
+*.pyc
+*.log
