@@ -12,6 +12,7 @@ class User(db.Model):
     userNumber: str = db.Column(db.String(255))
     userIdentity: str = db.Column(db.String(255), server_default="student")
     defaultCourseId: int = db.Column(db.Integer)
+    avatarUrl: str = db.Column(db.String(255))
 
 
 @dataclass

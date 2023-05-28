@@ -7,7 +7,7 @@ from app.database.models import UserSign
 class QueryUserSign:
     @staticmethod
     def get_userSigns(**kwargs):
-        instances = db.session.query(UserSign).filter_by(**kwargs).all()
+        instances = db.session.query(UserSign).filter_by(**kwargs).order_by(db.desc(UserSign.signId)).all()
         instances_dict = [asdict(instance) for instance in instances]
         for i, instance in enumerate(instances):
             sign = instance.sign
