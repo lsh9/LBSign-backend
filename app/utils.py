@@ -18,6 +18,14 @@ def generate_random_string(length=4):
     return random_str
 
 
+def md5(string) -> str:
+    """ 生成字符串的md5值 """
+    import hashlib
+    md5_obj = hashlib.md5()
+    md5_obj.update(string.encode("utf-8"))
+    return md5_obj.hexdigest()
+
+
 def exception_handler(func):
     def wrapper(*args, **kwargs):
         try:

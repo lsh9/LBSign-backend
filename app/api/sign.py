@@ -1,11 +1,10 @@
 import os
 import time
-from hashlib import md5
 
 from flask import Blueprint, request, current_app
 
 from app.query import QuerySign, QueryUserSign
-from app.utils import exception_handler
+from app.utils import exception_handler, md5
 
 sign_bp = Blueprint("sign_bp", __name__)
 
@@ -92,9 +91,7 @@ def download_sign_file():
     signId = data['signId']
     user_signs = QueryUserSign.get_userSigns(signId=signId)
     # 根据用户Id和签到Id生成加密文件名
-    md5_obj = md5()
-    md5_obj.update((str(userid) + " " + str(signId)).encode("utf-8"))
-    filename = md5_obj.hexdigest() + '.csv'
+    filename = md5(str(userid) + " " + str(signId)) + '.csv'
     filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
     file = open(filepath, "w", encoding="utf-8")
     file.write(f"用户id,签到姓名,签到学号,签到时间\n")
@@ -102,7 +99,7 @@ def download_sign_file():
         signTime = int(user_sign['signTimeStamps'])
         # 将时间戳转时间
         signTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(signTime))
-        file.write(f"{user_sign['userid']}，{user_sign['signUserName']},{user_sign['signUserNumber']},{signTime},\n")
+        file.write(f"{md5(str(user_sign['userid']))},{user_sign['signUserName']},{user_sign['signUserNumber']},{signTime},\n")
     file.close()
     # 返回文件路径
     url = os.path.join("/data/", filename)
