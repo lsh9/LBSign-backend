@@ -17,9 +17,10 @@ class QuerySign:
 
     @staticmethod
     def is_free_signCode(signCode):
-        oldest_sign = QuerySign._get_oldest_sign(signCode=signCode)
-        if oldest_sign is None or oldest_sign.endTimeStamps > time.time():
-            # signCode不存在或者不可用（即未到期）
+        """ 判断signCode是否可用，不存在或者到期为可用 """
+        oldest_sign = QuerySign._get_latest_sign(signCode=signCode)
+        if oldest_sign is None or oldest_sign.endTimeStamps < time.time():
+            # signCode不存在或者可用（即已到期）
             return True
         return False
 
@@ -40,10 +41,11 @@ class QuerySign:
 
     @staticmethod
     def get_sign_by_signCode(signCode):
-        if not QuerySign.is_free_signCode(signCode):
+        if QuerySign.is_free_signCode(signCode):
+            print("signCode不存在或者已到期")
             return None
-        sign = QuerySign._get_oldest_sign(signCode=signCode)
-        # 检查关联是否成功
+        sign = QuerySign._get_latest_sign(signCode=signCode)
+        print(sign)
         if sign:
             sign_count = QueryUserSign.get_sign_count_by_signId(sign.signId)
             sign_dict = asdict(sign)
@@ -63,7 +65,8 @@ class QuerySign:
         return sign_list
 
     @staticmethod
-    def _get_oldest_sign(**kwargs):
+    def _get_latest_sign(**kwargs):
+        """ 根据签到码获取结束最晚的签到 """
         oldest_sign = db.session.query(Sign).filter_by(**kwargs).order_by(db.desc(Sign.endTimeStamps)).first()
         return oldest_sign
 
