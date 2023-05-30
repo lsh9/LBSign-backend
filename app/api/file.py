@@ -1,4 +1,3 @@
-import hashlib
 import os.path
 
 from flask import Blueprint, send_file, request, current_app

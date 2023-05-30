@@ -26,7 +26,6 @@ class Course(db.Model):
     courseLocationAddress: str = db.Column(db.String(255))
     courseLongitude: int = db.Column(db.Integer)
     courseLatitude: int = db.Column(db.Integer)
-    validDistance: float = db.Column(db.Float, server_default="0")
 
     user = db.relationship("User", backref="course")
 

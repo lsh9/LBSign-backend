@@ -55,12 +55,16 @@ class QuerySign:
         return None
 
     @staticmethod
-    def get_signs_by_courseId(courseId):
-        signs = db.session.query(Sign).filter_by(courseId=courseId).order_by(db.desc(Sign.signId)).all()
+    def get_signs_by_courseId(courseId, count=True, desc=True):
+        if desc:
+            signs = db.session.query(Sign).filter_by(courseId=courseId).order_by(db.desc(Sign.signId)).all()
+        else:
+            signs = db.session.query(Sign).filter_by(courseId=courseId).order_by(db.asc(Sign.signId)).all()
         sign_list = []
         for sign in signs:
             sign_dict = asdict(sign)
-            sign_dict['signCount'] = QueryUserSign.get_sign_count_by_signId(sign.signId)
+            if count:
+                sign_dict['signCount'] = QueryUserSign.get_sign_count_by_signId(sign.signId)
             sign_list.append(sign_dict)
         return sign_list
 
